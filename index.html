@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEG | بوابة التعليم الهولوجرامي</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        heg: { cyan: '#00f2ff', purple: '#bd00ff', dark: '#050505' }
+                    },
+                    fontFamily: { cairo: ['Cairo', sans-serif] },
+                    boxShadow: { 
+                        'neon': '0 0 20px rgba(0, 242, 255, 0.4)',
+                        'neon-p': '0 0 25px rgba(189, 0, 255, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #000; color: white; overflow: hidden; height: 100vh; }
+        
+        /* --- خلفية وتأثيرات --- */
+        .clean-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 90%);
+        }
+        .grid-overlay {
+            position: fixed; inset: 0; z-index: -1; opacity: 0.1;
+            background-image: linear-gradient(#00f2ff 1px, transparent 1px), linear-gradient(90deg, #00f2ff 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveGrid 20s linear infinite;
+        }
+        @keyframes moveGrid { from { transform: translateY(0); } to { transform: translateY(50px); } }
+
+        /* --- الصفحات --- */
+        .page-section {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            padding-top: 60px; opacity: 0; 
+        }
+        .page-section.active { display: flex; opacity: 1; }
+
+        /* --- كروت الأسعار الجديدة --- */
+        .pricing-container {
+            display: flex; gap: 20px; justify-content: center; align-items: stretch;
+            flex-wrap: wrap; padding: 20px; perspective: 1000px;
+        }
+        .plan-card {
+            background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+            padding: 2rem; width: 300px; text-align: center; position: relative;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .plan-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #00f2ff; box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+        }
+        .plan-card.popular {
+            border-color: #bd00ff; background: linear-gradient(180deg, rgba(189, 0, 255, 0.05) 0%, rgba(0,0,0,0.6) 100%);
+        }
+        .plan-card.popular:hover {
+            border-color: #bd00ff; box-shadow: 0 0 40px rgba(189, 0, 255, 0.25);
+        }
+
+        /* --- الهولوجرام --- */
+        .hologram-overlay {
+            position: fixed; inset: 0; background: black; z-index: 9999; display: none;
+            justify-content: center; align-items: center;
+        }
+        .holo-container { position: relative; width: 80vh; height: 80vh; display: flex; justify-content: center; align-items: center; }
+        .holo-video { width: 100%; height: 100%; object-fit: contain; background: black; }
+        
+        .frame { position: absolute; width: 35%; height: 20%; overflow: hidden; }
+        .pos-top { top: 5%; transform: rotate(180deg); }
+        .pos-bottom { bottom: 5%; transform: rotate(0deg); }
+        .pos-left { left: -10%; top: 40%; transform: rotate(90deg); }
+        .pos-right { right: -10%; top: 40%; transform: rotate(-90deg); }
+
+        /* --- التحكم والتحميل --- */
+        .controls-bar { 
+            position: absolute; bottom: 30px; display: flex; gap: 10px; z-index: 100; 
+            background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px;
+        }
+        .vid-btn { 
+            width: 40px; height: 40px; border-radius: 50%; border: none; 
+            background: rgba(0,0,0,0.5); color: white; transition: 0.3s; cursor: pointer;
+        }
+        .vid-btn:hover { background: white; color: black; transform: scale(1.1); }
+        .vid-btn.active { background: #00f2ff; color: black; box-shadow: 0 0 10px #00f2ff; }
+        
+        /* زر التحميل */
+        .download-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 200;
+            background: rgba(0, 0, 0, 0.5); border: 1px solid #00f2ff; color: #00f2ff;
+            padding: 8px 20px; border-radius: 8px; cursor: pointer; 
+            display: flex; align-items: center; gap: 8px; font-weight: bold;
+            transition: 0.3s; text-decoration: none;
+        }
+        .download-btn:hover { background: #00f2ff; color: black; box-shadow: 0 0 15px #00f2ff; }
+
+    </style>
+</head>
+<body>
+
+    <div class="clean-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <nav class="fixed w-full z-50 bg-black/60 backdrop-blur border-b border-white/5 h-[80px] flex items-center px-8 justify-between">
+        <h1 class="text-3xl font-black text-heg-cyan tracking-widest cursor-pointer hover:animate-pulse" onclick="navigate('home')">HEG</h1>
+        <div class="hidden md:flex gap-8 font-bold text-sm">
+            <button onclick="navigate('home')" class="hover:text-heg-cyan transition">الرئيسية</button>
+            <button onclick="navigate('vision')" class="hover:text-heg-cyan transition">الرؤية</button>
+            <button onclick="navigate('pricing')" class="hover:text-heg-cyan transition">الباقات</button>
+        </div>
+        <button onclick="openDemo()" class="px-6 py-2 border border-heg-cyan text-heg-cyan rounded-full hover:bg-heg-cyan hover:text-black transition shadow-neon">
+            تجربة مجانية
+        </button>
+    </nav>
+
+    <section id="home" class="page-section active">
+        <div class="text-center space-y-6 max-w-4xl px-4 relative z-10">
+            <div class="gsap-hero inline-block px-4 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-heg-cyan mb-4">
+                تكنولوجيا التعليم المستقبلية
+            </div>
+            <h1 class="gsap-hero text-5xl md:text-7xl font-black leading-tight">
+                التعليم أصبح <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-heg-cyan to-heg-purple">واقع ملموس</span>
+            </h1>
+            <p class="gsap-hero text-gray-400 text-lg max-w-2xl mx-auto">
+                حول غرفتك إلى معمل ثلاثي الأبعاد. تفاعل مع المناهج الدراسية بدون إنترنت.
+            </p>
+            <div class="gsap-hero flex flex-col md:flex-row gap-4 justify-center mt-8">
+                <button onclick="navigate('pricing')" class="px-8 py-4 bg-heg-cyan text-black rounded-xl font-bold hover:shadow-neon hover:scale-105 transition">ابدأ الآن</button>
+                <button onclick="openDemo()" class="px-8 py-4 bg-white/5 border border-white/10 text-white rounded-xl font-bold hover:bg-white/10 transition flex items-center justify-center gap-2">
+                    <i data-lucide="play-circle"></i> شاهد الديمو
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="vision" class="page-section">
+        <h2 class="text-4xl font-bold mb-16 text-white text-center"><span class="text-heg-cyan">مميزات</span> النظام</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-6">
+            <div class="plan-card vision-card">
+                <i data-lucide="wifi-off" class="mx-auto mb-4 text-heg-cyan" size="40"></i>
+                <h3 class="text-xl font-bold mb-3">بدون إنترنت</h3>
+                <p class="text-gray-400 text-sm">يعمل النظام بالكامل Offline لضمان الاستمرارية.</p>
+            </div>
+            <div class="plan-card vision-card">
+                <i data-lucide="box" class="mx-auto mb-4 text-heg-purple" size="40"></i>
+                <h3 class="text-xl font-bold mb-3">مجسمات 3D</h3>
+                <p class="text-gray-400 text-sm">رؤية كاملة للأعضاء والخرائط من جميع الزوايا.</p>
+            </div>
+            <div class="plan-card vision-card">
+                <i data-lucide="download-cloud" class="mx-auto mb-4 text-green-500" size="40"></i>
+                <h3 class="text-xl font-bold mb-3">تحميل مباشر</h3>
+                <p class="text-gray-400 text-sm">احتفظ بالمحتوى على جهازك مدى الحياة.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="page-section">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-bold text-white mb-2">اختر الباقة المناسبة</h2>
+        </div>
+        
+        <div class="pricing-container">
+            <div class="plan-card">
+                <div>
+                    <h3 class="text-heg-cyan font-bold text-xl">Basic</h3>
+                    <div class="text-4xl font-black text-white mt-4 mb-2">300 <span class="text-lg text-gray-500">ج.م</span></div>
+                    <ul class="text-gray-300 space-y-3 text-sm text-right px-4 mt-6">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-cyan w-4"></i> عدد 2 فيديوهات</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-cyan w-4"></i> خاصية التنزيل</li>
+                    </ul>
+                </div>
+                <button onclick="openPayment('Basic', 300)" class="mt-8 w-full py-3 border border-heg-cyan text-heg-cyan rounded-lg hover:bg-heg-cyan hover:text-black transition font-bold">شراء</button>
+            </div>
+
+            <div class="plan-card popular transform scale-105">
+                <div class="absolute top-0 right-0 bg-heg-purple text-white text-xs px-3 py-1 rounded-bl-lg">الأكثر طلباً</div>
+                <div>
+                    <h3 class="text-heg-purple font-bold text-xl">Pro</h3>
+                    <div class="text-5xl font-black text-white mt-4 mb-2">450 <span class="text-lg text-gray-500">ج.م</span></div>
+                    <ul class="text-gray-300 space-y-3 text-sm text-right px-4 mt-6">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-purple w-4"></i> عدد 3 فيديوهات</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-purple w-4"></i> جودة عالية 4K</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-purple w-4"></i> تحميل سريع</li>
+                    </ul>
+                </div>
+                <button onclick="openPayment('Pro', 450)" class="mt-8 w-full py-3 bg-heg-purple text-white rounded-lg hover:opacity-90 transition font-bold">شراء</button>
+            </div>
+
+            <div class="plan-card">
+                <div>
+                    <h3 class="text-heg-cyan font-bold text-xl">Elite</h3>
+                    <div class="text-4xl font-black text-white mt-4 mb-2">600 <span class="text-lg text-gray-500">ج.م</span></div>
+                    <ul class="text-gray-300 space-y-3 text-sm text-right px-4 mt-6">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-cyan w-4"></i> المكتبة الكاملة (4 فيديوهات)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="text-heg-cyan w-4"></i> تحديثات مجانية</li>
+                    </ul>
+                </div>
+                <button onclick="openPayment('Elite', 600)" class="mt-8 w-full py-3 border border-heg-cyan text-heg-cyan rounded-lg hover:bg-heg-cyan hover:text-black transition font-bold">شراء</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="paymentModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[200] backdrop-blur-sm">
+        <div class="bg-[#111] p-8 rounded-2xl w-full max-w-md border border-white/10 relative">
+            <button onclick="closeModal('paymentModal')" class="absolute top-4 left-4 text-gray-500 hover:text-white">✕</button>
+            <h3 class="text-2xl font-bold mb-6 text-center text-white">إتمام عملية الشراء</h3>
+            
+            <div class="flex gap-4 mb-6">
+                <button onclick="togglePaymentMethod('visa')" id="btn-visa" class="flex-1 py-3 bg-heg-cyan text-black font-bold rounded flex justify-center gap-2 items-center"><i data-lucide="credit-card"></i> بطاقة</button>
+                <button onclick="togglePaymentMethod('wallet')" id="btn-wallet" class="flex-1 py-3 bg-[#222] text-gray-400 font-bold rounded flex justify-center gap-2 items-center border border-white/10"><i data-lucide="smartphone"></i> محفظة</button>
+            </div>
+
+            <form id="form-visa" onsubmit="event.preventDefault(); processPayment();" class="space-y-4">
+                <input type="text" placeholder="الاسم على البطاقة" required class="w-full bg-black/30 border border-white/10 p-3 rounded text-white outline-none focus:border-heg-cyan">
+                <input type="text" placeholder="رقم البطاقة (16 رقم)" maxlength="16" required class="w-full bg-black/30 border border-white/10 p-3 rounded text-white outline-none focus:border-heg-cyan tracking-widest">
+                <div class="flex gap-4">
+                    <input type="text" placeholder="MM/YY" required class="w-full bg-black/30 border border-white/10 p-3 rounded text-white text-center">
+                    <input type="password" placeholder="CVV" required class="w-full bg-black/30 border border-white/10 p-3 rounded text-white text-center">
+                </div>
+            </form>
+
+            <form id="form-wallet" class="space-y-4 hidden" onsubmit="event.preventDefault(); processPayment();">
+                <div class="p-4 bg-yellow-900/20 border border-yellow-600/50 rounded text-yellow-500 text-sm text-center">يدعم فودافون كاش، انستا باي</div>
+                <input type="text" placeholder="رقم المحفظة" maxlength="11" required class="w-full bg-black/30 border border-white/10 p-3 rounded text-white outline-none focus:border-yellow-500 tracking-widest">
+            </form>
+
+            <button onclick="processPayment()" id="payBtn" class="w-full mt-6 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded transition">
+                دفع <span id="payAmount">0</span> ج.م
+            </button>
+        </div>
+    </div>
+
+    <div id="hologramOverlay" class="hologram-overlay">
+        <button onclick="closeHologram()" class="absolute top-6 right-6 bg-red-600 text-white px-6 py-2 rounded-full font-bold z-50 hover:bg-red-700">خروج</button>
+        
+        <a id="downloadBtn" href="#" class="download-btn hidden" onclick="forceDownload(event)">
+            <i data-lucide="download" size="20"></i> حفظ الفيديو
+        </a>
+        
+        <div class="holo-container">
+            <div class="frame pos-top"><video id="v-top" class="holo-video" loop muted playsinline></video></div>
+            <div class="frame pos-left"><video id="v-left" class="holo-video" loop muted playsinline></video></div>
+            <div class="frame pos-right"><video id="v-right" class="holo-video" loop muted playsinline></video></div>
+            <div class="frame pos-bottom"><video id="v-bottom" class="holo-video" loop muted playsinline></video></div>
+        </div>
+
+        <div id="playlistContainer" class="controls-bar"></div>
+    </div>
+
+    <div id="demoOverlay" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300]">
+        <button onclick="document.getElementById('demoOverlay').style.display='none'; document.getElementById('demoVid').pause()" class="absolute top-5 right-5 text-white bg-red-600 px-4 py-2 rounded">إغلاق</button>
+        <video id="demoVid" controls class="max-w-[90%] max-h-[80%] border border-heg-cyan shadow-neon rounded">
+            <source src="fff.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // إعدادات المحتوى (تأكد من وجود الفيديوهات بنفس الأسماء)
+        const contentConfig = {
+            'Basic': { price: 300, videos: ['ff1.mp4', 'ff2.mp4'] },
+            'Pro': { price: 450, videos: ['ff3.mp4', 'jj.mp4', 'ff5.mp4'] },
+            'Elite': { price: 600, videos: ['ff6.mp4', 'ff7.mp4', 'ff8.mp4', 'ff9.mp4'] }
+        };
+
+        let currentPlan = null;
+
+        // التنقل والانيميشن
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.remove('active');
+                sec.style.opacity = '0';
+            });
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
+
+            if(pageId === 'home') {
+                gsap.fromTo("#home .gsap-hero", {y: 50, opacity: 0}, {y: 0, opacity: 1, duration: 0.8, stagger: 0.2});
+            } else if (pageId === 'pricing') {
+                gsap.fromTo(".plan-card", {y: 100, opacity: 0, scale: 0.9}, {y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.15});
+            }
+
+            setTimeout(() => target.style.opacity = '1', 50);
+        }
+
+        window.onload = () => navigate('home');
+
+        // منطق الدفع
+        function openPayment(planName, price) {
+            currentPlan = planName;
+            document.getElementById('payAmount').innerText = price;
+            document.getElementById('paymentModal').style.display = 'flex';
+            gsap.fromTo("#paymentModal > div", {scale: 0.8, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3});
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function togglePaymentMethod(method) {
+            const btnVisa = document.getElementById('btn-visa');
+            const btnWallet = document.getElementById('btn-wallet');
+            const formVisa = document.getElementById('form-visa');
+            const formWallet = document.getElementById('form-wallet');
+
+            if (method === 'visa') {
+                btnVisa.className = "flex-1 py-3 bg-heg-cyan text-black font-bold rounded flex justify-center gap-2 items-center";
+                btnWallet.className = "flex-1 py-3 bg-[#222] text-gray-400 font-bold rounded flex justify-center gap-2 items-center border border-white/10";
+                formVisa.classList.remove('hidden');
+                formWallet.classList.add('hidden');
+            } else {
+                btnWallet.className = "flex-1 py-3 bg-heg-cyan text-black font-bold rounded flex justify-center gap-2 items-center";
+                btnVisa.className = "flex-1 py-3 bg-[#222] text-gray-400 font-bold rounded flex justify-center gap-2 items-center border border-white/10";
+                formWallet.classList.remove('hidden');
+                formVisa.classList.add('hidden');
+            }
+        }
+
+        function processPayment() {
+            const btn = document.getElementById('payBtn');
+            btn.innerHTML = "جاري المعالجة...";
+            setTimeout(() => {
+                closeModal('paymentModal');
+                btn.innerHTML = `دفع ${contentConfig[currentPlan].price} ج.م`;
+                unlockContent(currentPlan);
+            }, 1500);
+        }
+
+        function openDemo() {
+            document.getElementById('demoOverlay').style.display = 'flex';
+            document.getElementById('demoVid').play();
+        }
+
+        // تشغيل المحتوى
+        function unlockContent(plan) {
+            const overlay = document.getElementById('hologramOverlay');
+            overlay.style.display = 'flex';
+            
+            const playlist = document.getElementById('playlistContainer');
+            playlist.innerHTML = '';
+            const videos = contentConfig[plan].videos;
+            
+            videos.forEach((vid, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = index + 1;
+                btn.className = 'vid-btn';
+                btn.onclick = () => playHoloVideo(vid, btn);
+                playlist.appendChild(btn);
+            });
+
+            if (videos.length > 0) playHoloVideo(videos[0], playlist.children[0]);
+        }
+
+        function playHoloVideo(src, btnElement) {
+            // تشغيل الفيديو
+            ['v-top', 'v-bottom', 'v-left', 'v-right'].forEach(id => {
+                const vid = document.getElementById(id);
+                vid.src = src;
+                vid.play();
+            });
+
+            // تحديث رابط التحميل
+            const dlBtn = document.getElementById('downloadBtn');
+            dlBtn.href = src;
+            dlBtn.setAttribute('download', src); // إضافة خاصية التنزيل
+            dlBtn.classList.remove('hidden');
+
+            // تحديث الزر النشط
+            document.querySelectorAll('.vid-btn').forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        // دالة حفظ الفيديو (Force Download)
+        function forceDownload(event) {
+            event.preventDefault(); // منع الفتح العادي
+            const url = event.currentTarget.href;
+            const filename = url.substring(url.lastIndexOf('/') + 1);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename; // أمر التنزيل
+            document.body.appendChild(a);
+            a.click(); // محاكاة الضغط
+            document.body.removeChild(a);
+        }
+
+        function closeHologram() {
+            document.getElementById('hologramOverlay').style.display = 'none';
+            document.querySelectorAll('.holo-video').forEach(v => v.pause());
+        }
+
+    </script>
+</body>
+</html>

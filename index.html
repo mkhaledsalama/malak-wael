@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HEG | بوابة التعليم الهولوجرامي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
@@ -19,14 +19,17 @@
                             cyan: '#00f2ff', 
                             purple: '#bd00ff', 
                             dark: '#050505',
-                            surface: 'rgba(20, 20, 25, 0.7)'
                         }
                     },
                     fontFamily: { cairo: ['Cairo', sans-serif] },
                     boxShadow: { 
-                        'neon': '0 0 15px rgba(0, 242, 255, 0.3)',
-                        'neon-p': '0 0 15px rgba(189, 0, 255, 0.3)',
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                        'neon': '0 0 20px rgba(0, 242, 255, 0.2)',
+                        'neon-strong': '0 0 30px rgba(0, 242, 255, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)'
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                        'btn-gradient': 'linear-gradient(90deg, #00f2ff 0%, #00c3ff 100%)'
                     }
                 }
             }
@@ -34,104 +37,137 @@
     </script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020202; color: white; overflow: hidden; height: 100vh; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #020202; 
+            color: white; 
+            overflow: hidden; 
+            height: 100vh; 
+        }
         
-        /* --- خلفية وتأثيرات محسنة --- */
+        /* --- خلفية ديناميكية --- */
         .clean-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(circle at top center, #1a1a2e 0%, #000000 80%);
         }
+        
+        /* شبكة متحركة خفيفة */
         .grid-overlay {
-            position: fixed; inset: 0; z-index: -1; opacity: 0.15;
+            position: fixed; inset: 0; z-index: -1; opacity: 0.2;
             background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.3) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(0, 242, 255, 0.3) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle, black 40%, transparent 80%); /* يجعل الشبكة تختفي عند الأطراف */
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 85%);
         }
 
-        /* --- الأزرار الحديثة (Modern Buttons) --- */
-        .btn-modern {
-            position: relative; overflow: hidden; border: none;
-            background: linear-gradient(90deg, #00f2ff 0%, #00c3ff 100%);
-            color: #000; font-weight: 800; border-radius: 12px;
-            transition: all 0.3s ease; box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-modern:hover {
-            transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 242, 255, 0.6);
+        /* --- تصميم الزجاج (Glassmorphism) --- */
+        .glass-panel {
+            background: rgba(20, 20, 25, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-outline-modern {
-            position: relative; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white; font-weight: 700; border-radius: 12px;
-            backdrop-filter: blur(5px); transition: all 0.3s ease;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        /* --- الأزرار الزجاجية (Glass Buttons) --- */
+        .btn-glass {
+            position: relative; overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white; font-weight: 700; border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-outline-modern:hover {
-            border-color: #bd00ff; color: #bd00ff;
-            background: rgba(189, 0, 255, 0.1);
-            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
+        .btn-glass::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        .btn-glass:hover::before { left: 100%; }
+
+        .btn-primary-glow {
+            background: linear-gradient(90deg, #00f2ff, #0099ff);
+            color: black; border: none;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+        }
+        .btn-primary-glow:hover {
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+            transform: scale(1.02);
         }
 
-        .btn-vip {
-            background: linear-gradient(90deg, #bd00ff 0%, #7f00ff 100%);
-            color: white; box-shadow: 0 0 15px rgba(189, 0, 255, 0.4);
-        }
-        .btn-vip:hover { box-shadow: 0 0 30px rgba(189, 0, 255, 0.7); }
-
-        /* --- الصفحات --- */
+        /* --- الصفحات (تحسين التمرير للموبايل) --- */
         .page-section {
             position: absolute; inset: 0; width: 100%; height: 100%;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            padding-top: 80px; opacity: 0; 
+            display: none; flex-direction: column; align-items: center;
+            padding-top: 100px; padding-bottom: 50px;
+            overflow-y: auto; /* يسمح بالتمرير داخل القسم في الشاشات الصغيرة */
+            scrollbar-width: none; /* إخفاء السكرول بار لفايرفوكس */
+            opacity: 0;
         }
+        .page-section::-webkit-scrollbar { display: none; } /* إخفاء السكرول بار لكروم */
         .page-section.active { display: flex; opacity: 1; }
+        
+        /* توسيط المحتوى عمودياً فقط إذا كانت الشاشة كبيرة */
+        @media (min-height: 800px) {
+            .page-section { justify-content: center; padding-top: 0; }
+        }
 
-        /* --- كروت الأسعار المحسنة --- */
+        /* --- كروت الأسعار --- */
         .pricing-container {
-            display: flex; gap: 25px; justify-content: center; align-items: stretch;
-            flex-wrap: wrap; padding: 20px;
+            display: flex; gap: 20px; justify-content: center; align-items: flex-start;
+            flex-wrap: wrap; padding: 20px; width: 100%; max-width: 1200px;
         }
         .plan-card {
-            background: rgba(15, 15, 20, 0.7); /* لون داكن للتباين */
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
-            padding: 2.5rem 2rem; width: 320px; text-align: center; position: relative;
+            background: rgba(18, 18, 23, 0.6);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px;
+            padding: 2rem; width: 100%; max-width: 340px; text-align: center; 
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column; justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .plan-card:hover {
             transform: translateY(-10px);
-            border-color: #00f2ff; box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
         .plan-card.popular {
-            background: linear-gradient(180deg, rgba(189, 0, 255, 0.08) 0%, rgba(10, 10, 10, 0.9) 100%);
-            border-color: rgba(189, 0, 255, 0.3);
-        }
-        .plan-card.popular:hover {
-            border-color: #bd00ff; box-shadow: 0 0 50px rgba(189, 0, 255, 0.2);
+            background: linear-gradient(180deg, rgba(189, 0, 255, 0.1) 0%, rgba(18, 18, 23, 0.8) 100%);
+            border-color: rgba(189, 0, 255, 0.4);
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.15);
         }
 
-        /* --- عناصر الناف بار --- */
+        /* --- الناف بار العائم --- */
+        .floating-nav {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1200px; height: 70px; z-index: 100;
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            padding: 0 30px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
         .nav-link {
-            position: relative; color: #ccc; transition: 0.3s;
+            color: #aaa; font-weight: 600; font-size: 0.95rem; transition: 0.3s;
+            padding: 8px 16px; border-radius: 20px;
         }
-        .nav-link::after {
-            content: ''; position: absolute; width: 0; height: 2px;
-            bottom: -5px; right: 0; background: #00f2ff; transition: 0.3s;
-        }
-        .nav-link:hover { color: white; }
-        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.05); }
 
-        /* --- الهولوجرام والتحكم --- */
+        /* --- الهولوجرام --- */
         .hologram-overlay {
             position: fixed; inset: 0; background: black; z-index: 9999; display: none;
             justify-content: center; align-items: center;
         }
-        .holo-container { position: relative; width: 80vh; height: 80vh; display: flex; justify-content: center; align-items: center; }
+        .holo-container { position: relative; width: 90vw; height: 90vw; max-width: 80vh; max-height: 80vh; display: flex; justify-content: center; align-items: center; }
         .holo-video { width: 100%; height: 100%; object-fit: contain; background: black; }
         
         .frame { position: absolute; width: 35%; height: 20%; overflow: hidden; }
@@ -141,25 +177,15 @@
         .pos-right { right: -10%; top: 40%; transform: rotate(-90deg); }
 
         .controls-bar { 
-            position: absolute; bottom: 30px; display: flex; gap: 12px; z-index: 100; 
-            background: rgba(255,255,255,0.08); padding: 12px 25px; border-radius: 50px;
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            position: absolute; bottom: 40px; display: flex; gap: 12px; z-index: 100; 
+            background: rgba(20, 20, 20, 0.8); padding: 12px 25px; border-radius: 50px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);
         }
         .vid-btn { 
             width: 45px; height: 45px; border-radius: 50%; border: none; font-weight: bold;
-            background: rgba(0,0,0,0.6); color: white; transition: 0.3s; cursor: pointer;
+            background: rgba(255,255,255,0.1); color: white; transition: 0.3s; cursor: pointer;
         }
-        .vid-btn:hover { background: white; color: black; transform: scale(1.15); }
-        .vid-btn.active { background: #00f2ff; color: black; box-shadow: 0 0 15px #00f2ff; }
-        
-        .download-btn {
-            position: absolute; top: 25px; left: 25px; z-index: 200;
-            background: rgba(0, 0, 0, 0.7); border: 1px solid #00f2ff; color: #00f2ff;
-            padding: 10px 25px; border-radius: 12px; cursor: pointer; 
-            display: flex; align-items: center; gap: 10px; font-weight: bold;
-            transition: 0.3s; text-decoration: none; backdrop-filter: blur(5px);
-        }
-        .download-btn:hover { background: #00f2ff; color: black; box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+        .vid-btn.active, .vid-btn:hover { background: #00f2ff; color: black; transform: scale(1.1); box-shadow: 0 0 15px #00f2ff; }
 
     </style>
 </head>
@@ -168,46 +194,47 @@
     <div class="clean-bg"></div>
     <div class="grid-overlay"></div>
 
-    <nav class="fixed w-full z-50 bg-black/70 backdrop-blur-md border-b border-white/5 h-[90px] flex items-center px-6 md:px-12 justify-between">
-        <div class="flex items-center gap-4 cursor-pointer hover:opacity-80 transition" onclick="navigate('home')">
-            <img src="fo.jpeg" alt="Logo" class="h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,242,255,0.3)]">
-            <h1 class="text-3xl font-black text-white tracking-widest">HEG</h1>
+    <nav class="floating-nav">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
+            <img src="fo.jpeg" alt="Logo" class="h-10 w-10 rounded-full object-cover border border-heg-cyan/30 shadow-[0_0_15px_rgba(0,242,255,0.3)]">
+            <h1 class="text-2xl font-black text-white tracking-widest hidden sm:block">HEG</h1>
         </div>
         
-        <div class="hidden md:flex gap-10 font-bold text-base">
+        <div class="hidden md:flex gap-2">
             <button onclick="navigate('home')" class="nav-link">الرئيسية</button>
             <button onclick="navigate('vision')" class="nav-link">الرؤية</button>
             <button onclick="navigate('pricing')" class="nav-link">الباقات</button>
         </div>
         
-        <button onclick="openDemo()" class="px-8 py-2.5 rounded-full font-bold bg-white/5 text-heg-cyan border border-heg-cyan/50 hover:bg-heg-cyan hover:text-black transition shadow-neon">
-            تجربة مجانية
+        <button onclick="openDemo()" class="px-6 py-2 rounded-full font-bold text-sm bg-heg-cyan text-black hover:bg-white transition shadow-neon">
+            تجربة <span class="hidden sm:inline">مجانية</span>
         </button>
     </nav>
 
     <section id="home" class="page-section active">
-        <div class="text-center space-y-8 max-w-5xl px-4 relative z-10 flex flex-col items-center">
+        <div class="text-center space-y-6 max-w-4xl px-6 relative z-10 flex flex-col items-center mt-20 md:mt-0">
             
-            <img src="fo.jpeg" alt="HEG Logo" class="gsap-hero h-24 mb-2 opacity-80 drop-shadow-[0_0_20px_rgba(189,0,255,0.4)]">
+            <img src="fo.jpeg" alt="HEG Logo" class="gsap-hero h-28 w-28 rounded-full object-cover mb-4 opacity-90 drop-shadow-[0_0_30px_rgba(189,0,255,0.3)] border-2 border-white/10 animate-pulse">
 
-            <div class="gsap-hero inline-block px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm text-heg-cyan font-bold tracking-wide">
-                ✨ تكنولوجيا التعليم المستقبلية
+            <div class="gsap-hero inline-flex items-center px-4 py-1.5 bg-white/5 border border-white/10 rounded-full backdrop-blur-md text-xs md:text-sm text-heg-cyan font-bold tracking-wider mb-2">
+                <span class="w-2 h-2 rounded-full bg-heg-cyan mr-2 animate-ping"></span>
+                مستقبل التعليم التفاعلي
             </div>
             
-            <h1 class="gsap-hero text-5xl md:text-8xl font-black leading-tight text-white drop-shadow-lg">
+            <h1 class="gsap-hero text-4xl md:text-7xl lg:text-8xl font-black leading-tight text-white drop-shadow-2xl">
                 التعليم أصبح <br> 
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-heg-cyan via-white to-heg-purple filter drop-shadow-sm">واقع ملموس</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-heg-cyan via-white to-heg-purple">واقع ملموس</span>
             </h1>
             
-            <p class="gsap-hero text-gray-300 text-xl max-w-2xl mx-auto font-light leading-relaxed">
-                حول غرفتك إلى معمل ثلاثي الأبعاد متكامل. تفاعل مع المناهج الدراسية بدون إنترنت وبأحدث التقنيات.
+            <p class="gsap-hero text-gray-400 text-lg md:text-xl max-w-xl mx-auto font-light leading-relaxed px-4">
+                تكنولوجيا الهولوجرام بين يديك. حول غرفتك إلى معمل ثلاثي الأبعاد متكامل بدون إنترنت.
             </p>
             
-            <div class="gsap-hero flex flex-col md:flex-row gap-6 justify-center mt-6 w-full md:w-auto">
-                <button onclick="navigate('pricing')" class="btn-modern px-10 py-4 text-lg">
-                    ابدأ رحلتك الآن
+            <div class="gsap-hero flex flex-col sm:flex-row gap-4 justify-center mt-8 w-full max-w-md mx-auto">
+                <button onclick="navigate('pricing')" class="btn-glass btn-primary-glow px-8 py-4 text-lg w-full sm:w-auto">
+                    ابدأ الآن
                 </button>
-                <button onclick="openDemo()" class="btn-outline-modern px-10 py-4 text-lg">
+                <button onclick="openDemo()" class="btn-glass px-8 py-4 text-lg w-full sm:w-auto">
                     <i data-lucide="play-circle"></i> شاهد الديمو
                 </button>
             </div>
@@ -215,137 +242,126 @@
     </section>
 
     <section id="vision" class="page-section">
-        <h2 class="text-5xl font-bold mb-16 text-white text-center"><span class="text-heg-cyan">مميزات</span> النظام</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-6">
-            <div class="plan-card vision-card">
-                <div class="bg-gray-900/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
-                    <i data-lucide="wifi-off" class="text-heg-cyan" size="35"></i>
+        <div class="container mx-auto px-4 mt-20 md:mt-0">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-white text-center"><span class="text-heg-cyan">مميزات</span> النظام</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto pb-10">
+                <div class="plan-card">
+                    <div class="bg-white/5 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-glass">
+                        <i data-lucide="wifi-off" class="text-heg-cyan" size="32"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-white">بدون إنترنت</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">تخلص من مشاكل الاتصال. يعمل النظام بالكامل Offline لضمان استمرارية التعلم.</p>
                 </div>
-                <h3 class="text-2xl font-bold mb-4 text-white">بدون إنترنت</h3>
-                <p class="text-gray-400 text-base leading-relaxed">يعمل النظام بالكامل Offline لضمان استمرارية التعلم في أي مكان.</p>
-            </div>
-            <div class="plan-card vision-card">
-                <div class="bg-gray-900/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
-                    <i data-lucide="box" class="text-heg-purple" size="35"></i>
+                <div class="plan-card">
+                    <div class="bg-white/5 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-glass">
+                        <i data-lucide="box" class="text-heg-purple" size="32"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-white">مجسمات 3D</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">رؤية محيطية شاملة للأعضاء والخرائط من جميع الزوايا بدقة فائقة.</p>
                 </div>
-                <h3 class="text-2xl font-bold mb-4 text-white">مجسمات 3D</h3>
-                <p class="text-gray-400 text-base leading-relaxed">رؤية كاملة وشاملة للأعضاء والخرائط من جميع الزوايا بدقة عالية.</p>
-            </div>
-            <div class="plan-card vision-card">
-                <div class="bg-gray-900/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
-                    <i data-lucide="download-cloud" class="text-green-500" size="35"></i>
+                <div class="plan-card">
+                    <div class="bg-white/5 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-glass">
+                        <i data-lucide="download-cloud" class="text-green-400" size="32"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-white">تحميل مباشر</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">امتلك المحتوى للأبد. قم بتحميل الفيديوهات مرة واحدة واحتفظ بها على جهازك.</p>
                 </div>
-                <h3 class="text-2xl font-bold mb-4 text-white">تحميل مباشر</h3>
-                <p class="text-gray-400 text-base leading-relaxed">احتفظ بالمحتوى التعليمي على جهازك مدى الحياة بضغطة زر.</p>
             </div>
         </div>
     </section>
 
     <section id="pricing" class="page-section">
-        <div class="text-center mb-12">
-            <h2 class="text-5xl font-bold text-white mb-4">اختر الباقة المناسبة</h2>
-            <p class="text-gray-400">خطط مرنة تناسب جميع الاحتياجات</p>
-        </div>
-        
-        <div class="pricing-container">
-            <div class="plan-card">
-                <div>
-                    <h3 class="text-heg-cyan font-bold text-2xl mb-2">Basic</h3>
-                    <div class="h-1 w-12 bg-heg-cyan rounded mx-auto mb-6"></div>
-                    <div class="text-5xl font-black text-white mt-2 mb-2">300 <span class="text-lg text-gray-500 font-normal">ج.م</span></div>
-                    <ul class="text-gray-300 space-y-4 text-base text-right px-4 mt-8">
-                        <li class="flex items-center gap-3"><span class="bg-heg-cyan/20 p-1 rounded-full text-heg-cyan"><i data-lucide="check" size="14"></i></span> عدد 2 فيديوهات</li>
-                        <li class="flex items-center gap-3"><span class="bg-heg-cyan/20 p-1 rounded-full text-heg-cyan"><i data-lucide="check" size="14"></i></span> خاصية التنزيل</li>
-                        <li class="flex items-center gap-3 text-gray-600"><span class="bg-gray-800 p-1 rounded-full"><i data-lucide="x" size="14"></i></span> جودة 4K</li>
-                    </ul>
-                </div>
-                <button onclick="openPayment('Basic', 300)" class="mt-8 w-full py-4 border border-heg-cyan text-heg-cyan rounded-xl hover:bg-heg-cyan hover:text-black transition font-bold text-lg">شراء الآن</button>
+        <div class="container mx-auto px-4 mt-24 md:mt-0 pb-10">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-3">الباقات المتاحة</h2>
+                <p class="text-gray-400">اختر الخطة التي تناسب احتياجاتك التعليمية</p>
             </div>
-
-            <div class="plan-card popular transform scale-105 z-10">
-                <div class="absolute top-0 right-0 bg-gradient-to-l from-heg-purple to-purple-700 text-white text-sm font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">الأكثر طلباً</div>
-                <div>
-                    <h3 class="text-heg-purple font-bold text-2xl mb-2">Pro</h3>
-                    <div class="h-1 w-12 bg-heg-purple rounded mx-auto mb-6"></div>
-                    <div class="text-6xl font-black text-white mt-2 mb-2">450 <span class="text-lg text-gray-500 font-normal">ج.م</span></div>
-                    <ul class="text-gray-300 space-y-4 text-base text-right px-4 mt-8">
-                        <li class="flex items-center gap-3"><span class="bg-heg-purple/20 p-1 rounded-full text-heg-purple"><i data-lucide="check" size="14"></i></span> عدد 3 فيديوهات</li>
-                        <li class="flex items-center gap-3"><span class="bg-heg-purple/20 p-1 rounded-full text-heg-purple"><i data-lucide="check" size="14"></i></span> جودة عالية 4K</li>
-                        <li class="flex items-center gap-3"><span class="bg-heg-purple/20 p-1 rounded-full text-heg-purple"><i data-lucide="check" size="14"></i></span> سرعة تحميل مضاعفة</li>
-                    </ul>
+            
+            <div class="pricing-container mx-auto">
+                <div class="plan-card">
+                    <div>
+                        <h3 class="text-heg-cyan font-bold text-xl mb-1">Basic</h3>
+                        <div class="text-4xl font-black text-white mb-4">300 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <div class="w-full h-px bg-white/10 mb-6"></div>
+                        <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-cyan w-4"></i> عدد 2 فيديوهات</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-cyan w-4"></i> خاصية التنزيل</li>
+                            <li class="flex items-center gap-3 text-gray-600"><i data-lucide="x-circle" class="w-4"></i> جودة 4K</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPayment('Basic', 300)" class="btn-glass mt-8 w-full py-3 text-heg-cyan border-heg-cyan/30 hover:bg-heg-cyan hover:text-black">شراء</button>
                 </div>
-                <button onclick="openPayment('Pro', 450)" class="btn-modern btn-vip mt-8 w-full py-4 rounded-xl font-bold text-lg border-none text-white">شراء الآن</button>
-            </div>
 
-            <div class="plan-card">
-                <div>
-                    <h3 class="text-white font-bold text-2xl mb-2">Elite</h3>
-                    <div class="h-1 w-12 bg-white rounded mx-auto mb-6"></div>
-                    <div class="text-5xl font-black text-white mt-2 mb-2">600 <span class="text-lg text-gray-500 font-normal">ج.م</span></div>
-                    <ul class="text-gray-300 space-y-4 text-base text-right px-4 mt-8">
-                        <li class="flex items-center gap-3"><span class="bg-white/20 p-1 rounded-full text-white"><i data-lucide="check" size="14"></i></span> المكتبة الكاملة (4 فيديوهات)</li>
-                        <li class="flex items-center gap-3"><span class="bg-white/20 p-1 rounded-full text-white"><i data-lucide="check" size="14"></i></span> تحديثات مجانية</li>
-                        <li class="flex items-center gap-3"><span class="bg-white/20 p-1 rounded-full text-white"><i data-lucide="check" size="14"></i></span> دعم فني مباشر</li>
-                    </ul>
+                <div class="plan-card popular relative z-10 transform md:-translate-y-4">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-heg-purple text-white text-xs font-bold px-4 py-1 rounded-full shadow-neon-p">الأكثر مبيعاً</div>
+                    <div>
+                        <h3 class="text-heg-purple font-bold text-2xl mb-1">Pro</h3>
+                        <div class="text-5xl font-black text-white mb-4">450 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <div class="w-full h-px bg-white/10 mb-6"></div>
+                        <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> عدد 3 فيديوهات</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> جودة عالية 4K</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> أولوية التحميل</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPayment('Pro', 450)" class="btn-glass mt-8 w-full py-4 bg-heg-purple/20 border-heg-purple text-white hover:bg-heg-purple shadow-neon-p">شراء الآن</button>
                 </div>
-                <button onclick="openPayment('Elite', 600)" class="mt-8 w-full py-4 border border-gray-400 text-white rounded-xl hover:bg-white hover:text-black transition font-bold text-lg">شراء الآن</button>
+
+                <div class="plan-card">
+                    <div>
+                        <h3 class="text-white font-bold text-xl mb-1">Elite</h3>
+                        <div class="text-4xl font-black text-white mb-4">600 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <div class="w-full h-px bg-white/10 mb-6"></div>
+                        <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> المكتبة الكاملة (4 فيديوهات)</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> تحديثات مجانية</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> دعم فني VIP</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPayment('Elite', 600)" class="btn-glass mt-8 w-full py-3 hover:bg-white hover:text-black">شراء</button>
+                </div>
             </div>
         </div>
     </section>
 
-    <div id="paymentModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[200] backdrop-blur-md">
-        <div class="bg-[#0a0a0a] p-10 rounded-3xl w-full max-w-lg border border-white/10 relative shadow-2xl">
-            <button onclick="closeModal('paymentModal')" class="absolute top-5 left-5 text-gray-500 hover:text-white transition bg-white/5 p-2 rounded-full">✕</button>
-            <h3 class="text-3xl font-bold mb-8 text-center text-white">إتمام عملية الشراء</h3>
+    <div id="paymentModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[200] backdrop-blur-md p-4">
+        <div class="bg-[#0f0f12] p-6 md:p-8 rounded-3xl w-full max-w-md border border-white/10 relative shadow-2xl">
+            <button onclick="closeModal('paymentModal')" class="absolute top-4 left-4 text-gray-400 hover:text-white bg-white/5 p-2 rounded-full transition">✕</button>
+            <h3 class="text-2xl font-bold mb-6 text-center text-white">إتمام الشراء</h3>
             
-            <div class="flex gap-4 mb-8">
-                <button onclick="togglePaymentMethod('visa')" id="btn-visa" class="flex-1 py-4 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-3 items-center shadow-lg transition-all"><i data-lucide="credit-card"></i> بطاقة بنكية</button>
-                <button onclick="togglePaymentMethod('wallet')" id="btn-wallet" class="flex-1 py-4 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-3 items-center border border-white/5 hover:bg-[#222] transition-all"><i data-lucide="smartphone"></i> محفظة إلكترونية</button>
+            <div class="flex gap-3 mb-6">
+                <button onclick="togglePaymentMethod('visa')" id="btn-visa" class="flex-1 py-3 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-2 items-center text-sm shadow-lg transition-all"><i data-lucide="credit-card" size="18"></i> بطاقة</button>
+                <button onclick="togglePaymentMethod('wallet')" id="btn-wallet" class="flex-1 py-3 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-2 items-center text-sm border border-white/10 hover:bg-[#222] transition-all"><i data-lucide="smartphone" size="18"></i> محفظة</button>
             </div>
 
-            <form id="form-visa" onsubmit="event.preventDefault(); processPayment();" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="text-sm text-gray-400 mr-1">الاسم على البطاقة</label>
-                    <input type="text" placeholder="مثال: Ahmed Mohamed" required class="w-full bg-[#151515] border border-white/10 p-4 rounded-xl text-white outline-none focus:border-heg-cyan focus:ring-1 focus:ring-heg-cyan transition">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-sm text-gray-400 mr-1">رقم البطاقة</label>
-                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="16" required class="w-full bg-[#151515] border border-white/10 p-4 rounded-xl text-white outline-none focus:border-heg-cyan focus:ring-1 focus:ring-heg-cyan tracking-widest transition">
-                </div>
-                <div class="flex gap-4">
-                    <div class="w-1/2 space-y-2">
-                        <label class="text-sm text-gray-400 mr-1">تاريخ الانتهاء</label>
-                        <input type="text" placeholder="MM/YY" required class="w-full bg-[#151515] border border-white/10 p-4 rounded-xl text-white text-center focus:border-heg-cyan transition">
-                    </div>
-                    <div class="w-1/2 space-y-2">
-                        <label class="text-sm text-gray-400 mr-1">رمز الأمان (CVV)</label>
-                        <input type="password" placeholder="123" required class="w-full bg-[#151515] border border-white/10 p-4 rounded-xl text-white text-center focus:border-heg-cyan transition">
-                    </div>
+            <form id="form-visa" onsubmit="event.preventDefault(); processPayment();" class="space-y-4">
+                <input type="text" placeholder="الاسم على البطاقة" required class="w-full bg-[#18181b] border border-white/10 p-3.5 rounded-xl text-white outline-none focus:border-heg-cyan transition text-sm">
+                <input type="text" placeholder="رقم البطاقة (16 رقم)" maxlength="16" required class="w-full bg-[#18181b] border border-white/10 p-3.5 rounded-xl text-white outline-none focus:border-heg-cyan transition tracking-widest text-sm">
+                <div class="flex gap-3">
+                    <input type="text" placeholder="MM/YY" required class="w-full bg-[#18181b] border border-white/10 p-3.5 rounded-xl text-white text-center focus:border-heg-cyan text-sm">
+                    <input type="password" placeholder="CVV" required class="w-full bg-[#18181b] border border-white/10 p-3.5 rounded-xl text-white text-center focus:border-heg-cyan text-sm">
                 </div>
             </form>
 
-            <form id="form-wallet" class="space-y-6 hidden" onsubmit="event.preventDefault(); processPayment();">
-                <div class="p-5 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
-                    <i data-lucide="alert-circle" class="text-yellow-500 shrink-0 mt-1"></i>
-                    <p class="text-yellow-500 text-sm leading-relaxed">يدعم جميع المحافظ الإلكترونية في مصر (فودافون كاش، انستا باي، أورانج كاش، اتصالات كاش).</p>
+            <form id="form-wallet" class="space-y-4 hidden" onsubmit="event.preventDefault(); processPayment();">
+                <div class="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-center gap-3">
+                    <i data-lucide="alert-circle" class="text-yellow-500 shrink-0" size="16"></i>
+                    <p class="text-yellow-500 text-xs">يدعم فودافون كاش، انستا باي، ومحافظ البنوك.</p>
                 </div>
-                <div class="space-y-2">
-                    <label class="text-sm text-gray-400 mr-1">رقم المحفظة</label>
-                    <input type="text" placeholder="010xxxxxxxx" maxlength="11" required class="w-full bg-[#151515] border border-white/10 p-4 rounded-xl text-white outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 tracking-widest transition">
-                </div>
+                <input type="text" placeholder="رقم المحفظة (010...)" maxlength="11" required class="w-full bg-[#18181b] border border-white/10 p-3.5 rounded-xl text-white outline-none focus:border-yellow-500 tracking-widest text-sm">
             </form>
 
-            <button onclick="processPayment()" id="payBtn" class="w-full mt-8 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold rounded-xl transition shadow-lg text-lg">
-                دفع <span id="payAmount">0</span> ج.م
+            <button onclick="processPayment()" id="payBtn" class="w-full mt-6 py-3.5 bg-gradient-to-r from-green-600 to-green-500 hover:brightness-110 text-white font-bold rounded-xl transition shadow-lg">
+                تأكيد ودفع <span id="payAmount">0</span> ج.م
             </button>
         </div>
     </div>
 
     <div id="hologramOverlay" class="hologram-overlay">
-        <button onclick="closeHologram()" class="absolute top-8 right-8 bg-red-600/80 hover:bg-red-600 text-white px-8 py-3 rounded-full font-bold z-50 backdrop-blur transition">خروج</button>
+        <button onclick="closeHologram()" class="absolute top-6 right-6 bg-red-600/90 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold z-50 backdrop-blur text-sm transition">خروج</button>
         
-        <a id="downloadBtn" href="#" class="download-btn hidden" onclick="forceDownload(event)">
-            <i data-lucide="download" size="20"></i> حفظ الفيديو
+        <a id="downloadBtn" href="#" class="absolute top-6 left-6 z-50 bg-heg-cyan/10 border border-heg-cyan text-heg-cyan px-6 py-2 rounded-full font-bold text-sm hidden hover:bg-heg-cyan hover:text-black transition flex items-center gap-2" onclick="forceDownload(event)">
+            <i data-lucide="download" size="16"></i> حفظ
         </a>
         
         <div class="holo-container">
@@ -358,9 +374,9 @@
         <div id="playlistContainer" class="controls-bar"></div>
     </div>
 
-    <div id="demoOverlay" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300]">
-        <button onclick="document.getElementById('demoOverlay').style.display='none'; document.getElementById('demoVid').pause()" class="absolute top-6 right-6 text-white bg-red-600 px-6 py-2 rounded-lg hover:bg-red-700 transition font-bold">إغلاق</button>
-        <video id="demoVid" controls class="max-w-[90%] max-h-[80%] border-2 border-heg-cyan shadow-[0_0_50px_rgba(0,242,255,0.2)] rounded-xl">
+    <div id="demoOverlay" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[300] p-4">
+        <button onclick="document.getElementById('demoOverlay').style.display='none'; document.getElementById('demoVid').pause()" class="absolute top-6 right-6 text-white bg-red-600/80 px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold text-sm">إغلاق</button>
+        <video id="demoVid" controls class="w-full max-w-4xl max-h-[80vh] border border-heg-cyan/30 shadow-neon rounded-2xl bg-black">
             <source src="fff.mp4" type="video/mp4">
         </video>
     </div>
@@ -385,9 +401,9 @@
             target.classList.add('active');
 
             if(pageId === 'home') {
-                gsap.fromTo("#home .gsap-hero", {y: 30, opacity: 0}, {y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power2.out"});
+                gsap.fromTo("#home .gsap-hero", {y: 30, opacity: 0}, {y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out"});
             } else if (pageId === 'pricing') {
-                gsap.fromTo(".plan-card", {y: 50, opacity: 0, scale: 0.95}, {y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)"});
+                gsap.fromTo(".plan-card", {y: 50, opacity: 0}, {y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.2)"});
             }
 
             setTimeout(() => target.style.opacity = '1', 50);
@@ -399,7 +415,7 @@
             currentPlan = planName;
             document.getElementById('payAmount').innerText = price;
             document.getElementById('paymentModal').style.display = 'flex';
-            gsap.fromTo("#paymentModal > div", {scale: 0.9, opacity: 0}, {scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.2)"});
+            gsap.fromTo("#paymentModal > div", {scale: 0.9, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3, ease: "back.out"});
         }
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -411,13 +427,13 @@
             const formWallet = document.getElementById('form-wallet');
 
             if (method === 'visa') {
-                btnVisa.className = "flex-1 py-4 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-3 items-center shadow-lg transition-all";
-                btnWallet.className = "flex-1 py-4 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-3 items-center border border-white/5 hover:bg-[#222] transition-all";
+                btnVisa.className = "flex-1 py-3 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-2 items-center text-sm shadow-lg transition-all";
+                btnWallet.className = "flex-1 py-3 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-2 items-center text-sm border border-white/10 hover:bg-[#222] transition-all";
                 formVisa.classList.remove('hidden');
                 formWallet.classList.add('hidden');
             } else {
-                btnWallet.className = "flex-1 py-4 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-3 items-center shadow-lg transition-all";
-                btnVisa.className = "flex-1 py-4 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-3 items-center border border-white/5 hover:bg-[#222] transition-all";
+                btnWallet.className = "flex-1 py-3 bg-heg-cyan text-black font-bold rounded-xl flex justify-center gap-2 items-center text-sm shadow-lg transition-all";
+                btnVisa.className = "flex-1 py-3 bg-[#1a1a1a] text-gray-400 font-bold rounded-xl flex justify-center gap-2 items-center text-sm border border-white/10 hover:bg-[#222] transition-all";
                 formWallet.classList.remove('hidden');
                 formVisa.classList.add('hidden');
             }
@@ -426,7 +442,7 @@
         function processPayment() {
             const btn = document.getElementById('payBtn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = "<span class='animate-pulse'>جاري الاتصال بالبنك...</span>";
+            btn.innerHTML = "<span class='animate-pulse'>جاري الاتصال...</span>";
             btn.disabled = true;
             
             setTimeout(() => {
@@ -472,6 +488,7 @@
             dlBtn.href = src;
             dlBtn.setAttribute('download', src);
             dlBtn.classList.remove('hidden');
+            dlBtn.style.display = "flex";
 
             document.querySelectorAll('.vid-btn').forEach(b => b.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
@@ -494,7 +511,6 @@
             document.getElementById('hologramOverlay').style.display = 'none';
             document.querySelectorAll('.holo-video').forEach(v => v.pause());
         }
-
     </script>
 </body>
 </html>

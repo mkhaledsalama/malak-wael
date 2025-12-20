@@ -67,14 +67,29 @@
             display: flex; flex-direction: column; justify-content: space-between;
         }
         .plan-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0, 242, 255, 0.4);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
-        .plan-card.popular {
-            background: linear-gradient(180deg, rgba(189, 0, 255, 0.15) 0%, rgba(15, 15, 22, 0.9) 100%);
-            border-color: rgba(189, 0, 255, 0.3);
+
+        /* --- كرت المطور --- */
+        .dev-card {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px; width: 90%;
+            position: relative;
+            overflow: hidden;
         }
+        .dev-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,242,255,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite; pointer-events: none;
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- الأزرار --- */
         .btn-glass {
@@ -101,14 +116,14 @@
             position: absolute; inset: 0; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center;
             padding-top: 100px; 
-            padding-bottom: 100px;
+            padding-bottom: 50px;
             overflow-y: auto; scrollbar-width: none; opacity: 0;
         }
         .page-section::-webkit-scrollbar { display: none; }
         .page-section.active { display: flex; opacity: 1; }
         
         @media (min-height: 850px) {
-            .page-section { justify-content: center; padding-top: 0; padding-bottom: 60px; }
+            .page-section { justify-content: center; padding-top: 0; padding-bottom: 0; }
         }
 
         /* --- الناف بار --- */
@@ -126,59 +141,6 @@
             padding: 8px 16px; border-radius: 20px;
         }
         .nav-link:hover { color: white; background: rgba(255,255,255,0.08); }
-
-        /* --- تصميم الفوتر المطور (Compact & Glowing) --- */
-        .dev-footer {
-            position: fixed; bottom: 20px; left: 50%; 
-            transform: translateX(-50%); z-index: 90;
-            width: auto; pointer-events: none;
-        }
-
-        .dev-badge {
-            pointer-events: auto;
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 242, 255, 0.15);
-            padding: 8px 25px;
-            border-radius: 50px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            animation: neon-pulse 3s infinite ease-in-out;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .dev-badge:hover {
-            transform: scale(1.05);
-            background: rgba(5, 5, 8, 0.95);
-            border-color: rgba(0, 242, 255, 0.5);
-        }
-
-        .dev-name { 
-            font-size: 0.75rem; font-weight: 800; color: #fff; letter-spacing: 1px; 
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-        }
-
-        .dev-details {
-            display: flex; gap: 8px; align-items: center; justify-content: center;
-            margin-top: 2px;
-        }
-
-        .dev-role { 
-            font-size: 0.55rem; color: #00f2ff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .dev-sep { width: 1px; height: 8px; background: rgba(255,255,255,0.2); }
-
-        .dev-contact { 
-            font-size: 0.6rem; color: #aaa; font-family: monospace; letter-spacing: 0.5px;
-        }
-
-        @keyframes neon-pulse {
-            0% { box-shadow: 0 0 5px rgba(0, 242, 255, 0.1), inset 0 0 5px rgba(0, 242, 255, 0.05); border-color: rgba(0, 242, 255, 0.2); }
-            50% { box-shadow: 0 0 15px rgba(0, 242, 255, 0.3), inset 0 0 10px rgba(0, 242, 255, 0.1); border-color: rgba(0, 242, 255, 0.5); }
-            100% { box-shadow: 0 0 5px rgba(0, 242, 255, 0.1), inset 0 0 5px rgba(0, 242, 255, 0.05); border-color: rgba(0, 242, 255, 0.2); }
-        }
 
         /* --- الهولوجرام --- */
         .hologram-overlay {
@@ -226,7 +188,8 @@
         <div class="hidden md:flex gap-1">
             <button onclick="navigate('home')" class="nav-link">الرئيسية</button>
             <button onclick="navigate('vision')" class="nav-link">الرؤية</button>
-            <button onclick="navigate('pricing')" class="nav-link">الباقات</button>
+            <button onclick="navigate('pricing')" class="nav-link">الاشتراكات</button>
+            <button onclick="navigate('designer')" class="nav-link text-heg-cyan font-bold">المطور</button>
         </div>
         
         <button onclick="openDemo()" class="px-5 py-2 rounded-full font-bold text-sm bg-heg-cyan text-black hover:bg-white transition shadow-neon">
@@ -296,67 +259,85 @@
     <section id="pricing" class="page-section">
         <div class="container mx-auto px-4 mt-28 md:mt-0 pb-16">
             <div class="text-center mb-10">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-3">الباقات المتاحة</h2>
-                <p class="text-gray-400">أسعار تناسب الطلاب والباحثين</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-3">خطط الاشتراك</h2>
+                <p class="text-gray-400">اختر مدة الاشتراك المناسبة ليك</p>
             </div>
             
             <div class="pricing-container mx-auto">
-                <div class="plan-card">
+                <div class="plan-card hover:border-heg-cyan/50">
                     <div>
-                        <h3 class="text-heg-cyan font-bold text-xl mb-1 tracking-wide">Basic</h3>
-                        <div class="text-4xl font-black text-white mb-4">300 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <h3 class="text-heg-cyan font-bold text-xl mb-1 tracking-wide">باقة الشهر</h3>
+                        <div class="text-4xl font-black text-white mb-4">536 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
                         <div class="w-full h-px bg-white/10 mb-6"></div>
                         <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-cyan w-4"></i> عدد 2 فيديوهات</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-cyan w-4"></i> خاصية التنزيل</li>
-                            <li class="flex items-center gap-3 text-gray-600"><i data-lucide="x-circle" class="w-4"></i> جودة 4K</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-cyan"></span> مدة الاشتراك 30 يوم</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-cyan"></span> وصول كامل للمكتبة</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-cyan"></span> تحميل بجودة عالية</li>
                         </ul>
                     </div>
-                    <button onclick="openPayment('Basic', 300)" class="btn-glass mt-8 w-full py-3 text-heg-cyan border-heg-cyan/30 hover:bg-heg-cyan hover:text-black">شراء</button>
+                    <button onclick="openPayment('Month', 536)" class="btn-glass mt-8 w-full py-3 hover:bg-white/10">اشترك الآن</button>
                 </div>
 
-                <div class="plan-card popular relative z-10 transform md:-translate-y-4">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-heg-purple text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg border border-white/20">الأكثر مبيعاً</div>
+                <div class="plan-card hover:border-heg-purple/50">
                     <div>
-                        <h3 class="text-heg-purple font-bold text-2xl mb-1 tracking-wide">Pro</h3>
-                        <div class="text-5xl font-black text-white mb-4">450 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <h3 class="text-heg-purple font-bold text-xl mb-1 tracking-wide">باقة 6 شهور</h3>
+                        <div class="text-4xl font-black text-white mb-4">3,216 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
                         <div class="w-full h-px bg-white/10 mb-6"></div>
                         <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> عدد 3 فيديوهات</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> جودة عالية 4K</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-heg-purple w-4"></i> أولوية التحميل</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-purple"></span> مدة الاشتراك 6 شهور</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-purple"></span> ضمان التحديثات</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-heg-purple"></span> أولوية الدعم الفني</li>
                         </ul>
                     </div>
-                    <button onclick="openPayment('Pro', 450)" class="btn-glass mt-8 w-full py-4 bg-heg-purple/10 border-heg-purple text-white hover:bg-heg-purple hover:shadow-[0_0_20px_rgba(189,0,255,0.4)]">شراء الآن</button>
+                    <button onclick="openPayment('6Months', 3216)" class="btn-glass mt-8 w-full py-3 hover:bg-white/10">اشترك الآن</button>
                 </div>
 
-                <div class="plan-card">
+                <div class="plan-card hover:border-white/50">
                     <div>
-                        <h3 class="text-white font-bold text-xl mb-1 tracking-wide">Elite</h3>
-                        <div class="text-4xl font-black text-white mb-4">600 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
+                        <h3 class="text-white font-bold text-xl mb-1 tracking-wide">الباقة السنوية</h3>
+                        <div class="text-4xl font-black text-white mb-4">6,432 <span class="text-base text-gray-500 font-normal">ج.م</span></div>
                         <div class="w-full h-px bg-white/10 mb-6"></div>
                         <ul class="text-gray-300 space-y-4 text-sm text-right px-2">
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> المكتبة الكاملة (4 فيديوهات)</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> تحديثات مجانية</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle" class="text-white w-4"></i> دعم فني VIP</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> مدة الاشتراك سنة كاملة</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> شامل كل التحديثات</li>
+                            <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> دعم فني VIP</li>
                         </ul>
                     </div>
-                    <button onclick="openPayment('Elite', 600)" class="btn-glass mt-8 w-full py-3 hover:bg-white hover:text-black">شراء</button>
+                    <button onclick="openPayment('Year', 6432)" class="btn-glass mt-8 w-full py-3 hover:bg-white/10">اشترك الآن</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="dev-footer">
-        <div class="dev-badge">
-            <div class="dev-name">ENG. MAHMOUD KHALED</div>
-            <div class="dev-details">
-                <span class="dev-role">Web Developer</span>
-                <span class="dev-sep"></span>
-                <span class="dev-contact">01129060271</span>
+    <section id="designer" class="page-section">
+        <div class="container mx-auto px-4 h-full flex items-center justify-center">
+            <div class="dev-card relative">
+                <div class="absolute top-0 right-0 p-6 opacity-20">
+                    <i data-lucide="code-2" size="100"></i>
+                </div>
+                
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-heg-cyan to-heg-purple p-1 mx-auto mb-6 shadow-[0_0_20px_rgba(0,242,255,0.5)]">
+                    <div class="w-full h-full rounded-full bg-black flex items-center justify-center">
+                        <i data-lucide="user" class="text-white" size="40"></i>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-black text-white mb-2 tracking-wider">ENG. MAHMOUD KHALED</h2>
+                <div class="text-heg-cyan font-bold text-sm tracking-[3px] mb-8 uppercase">Web Developer</div>
+                
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-center gap-3 text-gray-300 font-mono text-lg">
+                        <i data-lucide="phone" class="text-heg-purple" size="20"></i>
+                        01129060271
+                    </div>
+                </div>
+
+                <button onclick="navigate('home')" class="text-gray-500 hover:text-white text-sm transition mt-4 flex items-center justify-center gap-2 mx-auto">
+                    <i data-lucide="arrow-right" size="16"></i> العودة للرئيسية
+                </button>
             </div>
         </div>
-    </footer>
+    </section>
 
     <div id="paymentModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[200] backdrop-blur-md p-4">
         <div class="bg-[#0f0f12] p-6 md:p-8 rounded-3xl w-full max-w-md border border-white/10 relative shadow-2xl">
@@ -418,10 +399,13 @@
     <script>
         lucide.createIcons();
 
+        // فتحنا كل الفيديوهات لكل الباقات لأن الاشتراك بقا بالمدة
+        const allVideos = ['ff1.mp4', 'ff2.mp4', 'ff3.mp4', 'jj.mp4', 'ff5.mp4', 'ff6.mp4', 'ff7.mp4', 'ff8.mp4', 'ff9.mp4'];
+
         const contentConfig = {
-            'Basic': { price: 300, videos: ['ff1.mp4', 'ff2.mp4'] },
-            'Pro': { price: 450, videos: ['ff3.mp4', 'jj.mp4', 'ff5.mp4'] },
-            'Elite': { price: 600, videos: ['ff6.mp4', 'ff7.mp4', 'ff8.mp4', 'ff9.mp4'] }
+            'Month': { price: 536, videos: allVideos },
+            '6Months': { price: 3216, videos: allVideos },
+            'Year': { price: 6432, videos: allVideos }
         };
 
         let currentPlan = null;
@@ -438,6 +422,8 @@
                 gsap.fromTo("#home .gsap-hero", {y: 30, opacity: 0}, {y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out"});
             } else if (pageId === 'pricing') {
                 gsap.fromTo(".plan-card", {y: 50, opacity: 0}, {y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.2)"});
+            } else if (pageId === 'designer') {
+                gsap.fromTo(".dev-card", {scale: 0.8, opacity: 0}, {scale: 1, opacity: 1, duration: 0.6, ease: "elastic.out(1, 0.75)"});
             }
 
             setTimeout(() => target.style.opacity = '1', 50);
@@ -447,7 +433,7 @@
 
         function openPayment(planName, price) {
             currentPlan = planName;
-            document.getElementById('payAmount').innerText = price;
+            document.getElementById('payAmount').innerText = price.toLocaleString(); // إضافة الفاصلة للآلاف
             document.getElementById('paymentModal').style.display = 'flex';
             gsap.fromTo("#paymentModal > div", {scale: 0.9, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3, ease: "back.out"});
         }
